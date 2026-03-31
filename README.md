@@ -28,21 +28,18 @@ The public API returns `String?`.
 - `"home"`
 - `"cache"`
 - `"config"`
+- `"executable"`
 - `"data"`
 - `"data_local"`
-- `"download"`
-- `"tmp"`
-
-Not yet implemented:
-
-- `"executable"`
 - `"audio"`
 - `"desktop"`
 - `"document"`
+- `"download"`
 - `"font"`
 - `"picture"`
 - `"public"`
 - `"template"`
+- `"tmp"`
 - `"video"`
 
 ## Directory rules
@@ -79,6 +76,14 @@ Not yet implemented:
 | macOS | `HOME/Library/Application Support` |
 | Windows | `APPDATA` |
 
+### `executable`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_BIN_HOME`, then `XDG_DATA_HOME/../bin`, then `HOME/.local/bin` |
+| macOS | Not defined |
+| Windows | Not defined |
+
 ### `data_local`
 
 | Platform | Resolution |
@@ -86,6 +91,30 @@ Not yet implemented:
 | Linux | Same as `data` |
 | macOS | Same as `data` |
 | Windows | `LOCALAPPDATA` |
+
+### `audio`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_MUSIC_DIR`, then `HOME/Music` |
+| macOS | `HOME/Music` |
+| Windows | `USERPROFILE/Music`, then `HOMEDRIVE` + `HOMEPATH` + `Music` |
+
+### `desktop`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_DESKTOP_DIR`, then `HOME/Desktop` |
+| macOS | `HOME/Desktop` |
+| Windows | `USERPROFILE/Desktop`, then `HOMEDRIVE` + `HOMEPATH` + `Desktop` |
+
+### `document`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_DOCUMENTS_DIR`, then `HOME/Documents` |
+| macOS | `HOME/Documents` |
+| Windows | `USERPROFILE/Documents`, then `HOMEDRIVE` + `HOMEPATH` + `Documents` |
 
 ### `download`
 
@@ -95,6 +124,38 @@ Not yet implemented:
 | macOS | `HOME/Downloads` |
 | Windows | `USERPROFILE/Downloads`, then `HOMEDRIVE` + `HOMEPATH` + `Downloads` |
 
+### `font`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_DATA_HOME/fonts`, then `HOME/.local/share/fonts` |
+| macOS | `HOME/Library/Fonts` |
+| Windows | Not defined |
+
+### `picture`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_PICTURES_DIR`, then `HOME/Pictures` |
+| macOS | `HOME/Pictures` |
+| Windows | `USERPROFILE/Pictures`, then `HOMEDRIVE` + `HOMEPATH` + `Pictures` |
+
+### `public`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_PUBLICSHARE_DIR`, then `HOME/Public` |
+| macOS | `HOME/Public` |
+| Windows | `PUBLIC`, then `SYSTEMDRIVE\\Users\\Public` |
+
+### `template`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_TEMPLATES_DIR`, then `HOME/Templates` |
+| macOS | Not defined |
+| Windows | `APPDATA/Microsoft/Windows/Templates` |
+
 ### `tmp`
 
 | Platform | Resolution |
@@ -102,6 +163,14 @@ Not yet implemented:
 | Linux | `XDG_RUNTIME_DIR/tmp`, then `TMPDIR`, `TEMP`, `TMP`, then `/var/tmp` |
 | macOS | `TMPDIR` |
 | Windows | `TMP`, then `TEMP` |
+
+### `video`
+
+| Platform | Resolution |
+| -------- | ---------- |
+| Linux | `XDG_VIDEOS_DIR`, then `HOME/Videos` |
+| macOS | `HOME/Movies` |
+| Windows | `USERPROFILE/Videos`, then `HOMEDRIVE` + `HOMEPATH` + `Videos` |
 
 ## Design notes
 

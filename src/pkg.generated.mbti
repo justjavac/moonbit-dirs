@@ -2,6 +2,8 @@
 package "justjavac/dirs"
 
 // Values
+pub fn audio_dir() -> String?
+
 pub fn cache_dir() -> String?
 
 pub fn config_dir() -> String?
@@ -10,13 +12,29 @@ pub fn data_dir() -> String?
 
 pub fn data_local_dir() -> String?
 
+pub fn desktop_dir() -> String?
+
 pub fn dir(String) -> String?
+
+pub fn document_dir() -> String?
 
 pub fn download_dir() -> String?
 
+pub fn executable_dir() -> String?
+
+pub fn font_dir() -> String?
+
 pub fn home_dir() -> String?
 
+pub fn picture_dir() -> String?
+
+pub fn public_dir() -> String?
+
+pub fn template_dir() -> String?
+
 pub fn tmp_dir() -> String?
+
+pub fn video_dir() -> String?
 
 // Errors
 
