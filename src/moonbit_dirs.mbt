@@ -15,8 +15,6 @@
 /// | `"download"` | The user's downloads directory |
 /// | `"tmp"` | The preferred temporary directory |
 ///
-/// The implementation infers the operating system from well-known environment
-/// variables instead of calling native platform APIs.
 /// When the required variables are missing or the platform cannot be inferred,
 /// the function returns `None`.
 ///
@@ -37,8 +35,7 @@ pub fn dir(kind : String) -> String? {
 ///|
 /// Returns the current user's home directory.
 ///
-/// Resolution follows the same platform rules as `deno_dirs` while staying
-/// entirely in MoonBit:
+/// Resolution follows the same platform rules as `deno_dirs`:
 ///
 /// | Platform | Resolution order |
 /// | -------- | ---------------- |

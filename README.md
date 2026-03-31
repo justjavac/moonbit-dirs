@@ -2,9 +2,9 @@
 
 [![codecov](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
 
-Returns user-specific, platform-specific directory paths in MoonBit.
+Returns user-specific, platform-specific directory paths.
 
-This project follows the implemented surface of [`justjavac/deno_dirs`](https://github.com/justjavac/deno_dirs), but exposes a MoonBit API and keeps the implementation free of C stubs or native glue code.
+This project follows the implemented surface of [`justjavac/deno_dirs`](https://github.com/justjavac/deno_dirs) and exposes a MoonBit API.
 
 ## Usage
 
@@ -106,8 +106,6 @@ Not yet implemented:
 ## Design notes
 
 - Source files live under `src/`.
-- The implementation is written in MoonBit.
-- Platform detection is environment-driven instead of using native APIs.
 - Tests cover the public API plus all internal resolution branches.
 
 ## Development

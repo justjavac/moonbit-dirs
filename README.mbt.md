@@ -41,5 +41,4 @@ Unsupported names return `None`.
 ## Notes
 
 - Source files live under `src/`.
-- The package intentionally avoids C code.
 - Platform inference is based on environment variables.
