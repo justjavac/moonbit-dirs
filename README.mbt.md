@@ -1,16 +1,16 @@
-# justjavac/moonbit_dirs
+# justjavac/dirs
 
 [![codecov](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
 
-Pure MoonBit helpers for resolving user-specific directory paths on Linux, macOS, and Windows.
+MoonBit helpers for resolving user-specific directory paths on Linux, macOS, and Windows.
 
 ## Example
 
 ```mbt check
 test "public API stays consistent" {
-  assert_eq(@moonbit_dirs.dir("cache"), @moonbit_dirs.cache_dir())
-  assert_eq(@moonbit_dirs.dir("download"), @moonbit_dirs.download_dir())
-  assert_eq(@moonbit_dirs.dir("tmp"), @moonbit_dirs.tmp_dir())
+  assert_eq(@dirs.dir("cache"), @dirs.cache_dir())
+  assert_eq(@dirs.dir("download"), @dirs.download_dir())
+  assert_eq(@dirs.dir("tmp"), @dirs.tmp_dir())
 }
 ```
 

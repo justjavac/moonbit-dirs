@@ -15,8 +15,8 @@
 /// | `"download"` | The user's downloads directory |
 /// | `"tmp"` | The preferred temporary directory |
 ///
-/// The implementation is pure MoonBit, so it infers the operating system from
-/// well-known environment variables instead of calling native platform APIs.
+/// The implementation infers the operating system from well-known environment
+/// variables instead of calling native platform APIs.
 /// When the required variables are missing or the platform cannot be inferred,
 /// the function returns `None`.
 ///
@@ -24,9 +24,9 @@
 ///
 /// ```mbt check
 /// test "dir agrees with dedicated helpers" {
-///   assert_eq(@moonbit_dirs.dir("cache"), @moonbit_dirs.cache_dir())
-///   assert_eq(@moonbit_dirs.dir("tmp"), @moonbit_dirs.tmp_dir())
-///   assert_eq(@moonbit_dirs.dir("unsupported"), None)
+///   assert_eq(@dirs.dir("cache"), @dirs.cache_dir())
+///   assert_eq(@dirs.dir("tmp"), @dirs.tmp_dir())
+///   assert_eq(@dirs.dir("unsupported"), None)
 /// }
 /// ```
 pub fn dir(kind : String) -> String? {
