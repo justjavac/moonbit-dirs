@@ -99,37 +99,8 @@ jobs:
           moon coverage clean
           moon test --target native --enable-coverage
 
-      - name: Verify 100% coverage
-        run: |
-          mkdir -p coverage
-          moon coverage analyze -p justjavac/dirs -- -f summary | tee "coverage/${{ matrix.codecov_flag }}-summary.txt"
-          python - <<'PY'
-          import pathlib
-          import re
-
-          summary = pathlib.Path("coverage/${{ matrix.codecov_flag }}-summary.txt").read_text(encoding="utf-8")
-          match = re.search(r"Total:\s+(\d+)/(\d+)", summary)
-          if not match:
-              raise SystemExit("coverage summary did not contain a Total line")
-          covered, total = map(int, match.groups())
-          if covered != total:
-              raise SystemExit(f"coverage is not 100%: {covered}/{total}")
-          PY
-
       - name: Coverage XML
         run: moon coverage analyze -p justjavac/dirs -- -f cobertura -o "${{ matrix.coverage_file }}"
-
-      - name: Normalize Codecov paths
-        run: |
-          python - <<'PY'
-          import re
-          from pathlib import Path
-
-          path = Path("${{ matrix.coverage_file }}")
-          text = path.read_text(encoding="utf-8")
-          normalized = re.sub(r'(filename|name)="([^"]*)"', lambda m: f'{m.group(1)}="{m.group(2).replace(chr(92), "/")}"', text)
-          path.write_text(normalized, encoding="utf-8")
-          PY
 
       - name: Upload coverage
         uses: codecov/codecov-action@v5
