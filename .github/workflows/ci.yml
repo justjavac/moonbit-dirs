@@ -5,16 +5,25 @@ on:
     branches:
       - main
   pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  test-and-coverage:
+  lint:
+    name: Lint and Type Check
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
+      - name: Configure git
+        run: git config --global core.autocrlf false
 
       - name: Set up MoonBit
         run: |
@@ -22,14 +31,65 @@ jobs:
           echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
       - name: Show toolchain versions
-        run: |
-          moon version --all
+        run: moon version --all
+
+      - name: Refresh registry and dependencies
+        run: moon update
 
       - name: Format check
         run: moon check --fmt
 
-      - name: Type check
-        run: moon check
+      - name: Type check all targets
+        run: moon check --target all
+
+  test:
+    name: Test (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            os: ubuntu-latest
+            flag: linux
+          - name: macOS
+            os: macos-latest
+            flag: macos
+          - name: Windows
+            os: windows-latest
+            flag: windows
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Configure git
+        run: git config --global core.autocrlf false
+
+      - name: Set up MoonBit (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Set up MoonBit (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "$env:USERPROFILE\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      - name: Show toolchain versions
+        run: moon version --all
+
+      - name: Refresh registry and dependencies
+        run: moon update
 
       - name: Run tests with coverage
         run: |
@@ -39,11 +99,12 @@ jobs:
       - name: Verify 100% coverage
         run: |
           mkdir -p coverage
-          moon coverage report -f summary | tee coverage/summary.txt
+          moon coverage report -f summary | tee "coverage/${{ matrix.flag }}-summary.txt"
           python - <<'PY'
           import pathlib
           import re
-          summary = pathlib.Path("coverage/summary.txt").read_text(encoding="utf-8")
+
+          summary = pathlib.Path("coverage/${{ matrix.flag }}-summary.txt").read_text(encoding="utf-8")
           match = re.search(r"Total:\s+(\d+)/(\d+)", summary)
           if not match:
               raise SystemExit("coverage summary did not contain a Total line")
@@ -53,12 +114,15 @@ jobs:
           PY
 
       - name: Build Codecov report
-        run: moon coverage report -f coveralls -o coverage/codecov.json
+        run: moon coverage report -f coveralls -o "coverage/${{ matrix.flag }}.json"
 
       - name: Upload coverage
         uses: codecov/codecov-action@v5
         with:
-          files: coverage/codecov.json
           disable_search: true
           fail_ci_if_error: true
+          files: coverage/${{ matrix.flag }}.json
+          flags: ${{ matrix.flag }}
+          name: ${{ matrix.flag }}
           use_oidc: true
+          verbose: true
