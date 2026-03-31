@@ -116,6 +116,25 @@ jobs:
       - name: Build Codecov report
         run: moon coverage report -f coveralls -o "coverage/${{ matrix.flag }}.json"
 
+      - name: Normalize Codecov paths
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          path = Path("coverage/${{ matrix.flag }}.json")
+          text = path.read_text(encoding="utf-8")
+
+          def normalize_name(match):
+              prefix, name, suffix = match.groups()
+              return f"{prefix}{name.replace(chr(92), '/')}{suffix}"
+
+          normalized = re.sub(r'("name"\s*:\s*")([^"]*)(")', normalize_name, text)
+          json.loads(normalized)
+          path.write_text(normalized, encoding="utf-8")
+          PY
+
       - name: Upload coverage
         uses: codecov/codecov-action@v5
         with:
