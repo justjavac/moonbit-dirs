@@ -1,0 +1,16 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 100%
+        threshold: 0%
+        informational: false
+
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: false
+
+ignore:
+  - "src/*_test.mbt"
+  - "src/*_wbtest.mbt"

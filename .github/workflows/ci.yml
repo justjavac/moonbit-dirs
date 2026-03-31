@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-and-coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: Show toolchain versions
+        run: |
+          moon version --all
+
+      - name: Format check
+        run: moon check --fmt
+
+      - name: Type check
+        run: moon check
+
+      - name: Run tests with coverage
+        run: |
+          moon coverage clean
+          moon test --enable-coverage
+
+      - name: Verify 100% coverage
+        run: |
+          mkdir -p coverage
+          moon coverage report -f summary | tee coverage/summary.txt
+          python - <<'PY'
+          import pathlib
+          import re
+          summary = pathlib.Path("coverage/summary.txt").read_text(encoding="utf-8")
+          match = re.search(r"Total:\s+(\d+)/(\d+)", summary)
+          if not match:
+              raise SystemExit("coverage summary did not contain a Total line")
+          covered, total = map(int, match.groups())
+          if covered != total:
+              raise SystemExit(f"coverage is not 100%: {covered}/{total}")
+          PY
+
+      - name: Build Codecov report
+        run: moon coverage report -f coveralls -o coverage/codecov.json
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/codecov.json
+          disable_search: true
+          fail_ci_if_error: true
+          use_oidc: true

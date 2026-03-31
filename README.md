@@ -116,7 +116,7 @@ Not yet implemented:
 moon fmt
 moon check
 moon test --enable-coverage
-moon coverage report -f summary -p justjavac/moonbit_dirs
+moon coverage report -f summary
 moon info
 ```
 
