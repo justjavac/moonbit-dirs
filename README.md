@@ -1,10 +1,10 @@
 # moonbit-dirs
 
 [![CI](https://github.com/justjavac/moonbit-dirs/actions/workflows/ci.yml/badge.svg)](https://github.com/justjavac/moonbit-dirs/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
-[![linux coverage](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main&flag=linux)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
-[![macos coverage](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main&flag=macos)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
-[![windows coverage](https://codecov.io/github/justjavac/moonbit-dirs/graph/badge.svg?branch=main&flag=windows)](https://app.codecov.io/github/justjavac/moonbit-dirs?branch=main)
+[![coverage](https://img.shields.io/codecov/c/github/justjavac/moonbit-dirs/main?label=coverage)](https://codecov.io/gh/justjavac/moonbit-dirs)
+[![linux](https://img.shields.io/codecov/c/github/justjavac/moonbit-dirs/main?flag=linux&label=linux)](https://codecov.io/gh/justjavac/moonbit-dirs)
+[![macos](https://img.shields.io/codecov/c/github/justjavac/moonbit-dirs/main?flag=macos&label=macos)](https://codecov.io/gh/justjavac/moonbit-dirs)
+[![windows](https://img.shields.io/codecov/c/github/justjavac/moonbit-dirs/main?flag=windows&label=windows)](https://codecov.io/gh/justjavac/moonbit-dirs)
 
 Returns user-specific, platform-specific directory paths.
 
