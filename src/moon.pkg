@@ -1,4 +1,6 @@
 import {
   "moonbitlang/core/builtin",
   "moonbitlang/core/env",
+  "moonbitlang/x/path/posix" @posix,
+  "moonbitlang/x/path/win32" @win32,
 }

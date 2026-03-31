@@ -52,7 +52,7 @@ test "environment helpers ignore blank values and search in order" {
 }
 
 ///|
-test "path helpers join segments without corrupting roots" {
+test "join_path delegates to official path implementations" {
   assert_eq(join_path(Linux, "", "tmp"), "tmp")
   assert_eq(join_path(Linux, "/home/alice/", ".cache"), "/home/alice/.cache")
   assert_eq(join_path(Linux, "/", "tmp"), "/tmp")
@@ -61,16 +61,7 @@ test "path helpers join segments without corrupting roots" {
     "C:\\Users\\alice\\Downloads",
   )
   assert_eq(join_path(Windows, "C:\\", "Temp"), "C:\\Temp")
-  assert_eq(strip_trailing_separators("/tmp///", Linux), "/tmp")
-  assert_eq(
-    strip_trailing_separators("C:\\Users\\alice\\\\", Windows),
-    "C:\\Users\\alice",
-  )
-  assert_true(ends_with_separator("C:\\"))
-  assert_true(is_root_path("/", Linux))
-  assert_true(is_root_path("C:\\", Windows))
-  assert_true(is_root_path("/", Windows))
-  assert_false(is_root_path("C:\\Users", Windows))
+  assert_eq(join_path(Windows, "C:\\Users\\alice", "D:\\Data"), "D:\\Data")
 }
 
 ///|

@@ -18,6 +18,15 @@ fn dir_for_env(
 }
 
 ///|
+/// Joins two path segments with the official platform-specific path implementation.
+fn join_path(platform : Platform, base : String, child : String) -> String {
+  match platform {
+    Windows => @win32.Path::join(base, child).to_string()
+    _ => @posix.Path::join(base, child).to_string()
+  }
+}
+
+///|
 /// Resolves the user's home directory.
 fn home_dir_for_env(platform : Platform, envs : Map[String, String]) -> String? {
   match platform {
