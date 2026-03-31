@@ -1,0 +1,17 @@
+{
+  "name": "justjavac/moonbit_dirs",
+  "version": "0.1.0",
+  "readme": "README.mbt.md",
+  "repository": "https://github.com/justjavac/moonbit-dirs",
+  "license": "MIT",
+  "keywords": [
+    "moonbit",
+    "directories",
+    "xdg",
+    "windows",
+    "macos",
+    "linux"
+  ],
+  "description": "Pure MoonBit helpers for resolving user-specific directories across Linux, macOS, and Windows.",
+  "source": "src"
+}

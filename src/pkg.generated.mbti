@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "justjavac/moonbit_dirs"
+
+// Values
+pub fn cache_dir() -> String?
+
+pub fn config_dir() -> String?
+
+pub fn data_dir() -> String?
+
+pub fn data_local_dir() -> String?
+
+pub fn dir(String) -> String?
+
+pub fn download_dir() -> String?
+
+pub fn home_dir() -> String?
+
+pub fn tmp_dir() -> String?
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+
