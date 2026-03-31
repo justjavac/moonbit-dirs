@@ -54,13 +54,16 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-latest
-            flag: linux
+            codecov_flag: linux
+            coverage_file: coverage/linux-cobertura.xml
           - name: macOS
             os: macos-latest
-            flag: macos
+            codecov_flag: macos
+            coverage_file: coverage/macos-cobertura.xml
           - name: Windows
             os: windows-latest
-            flag: windows
+            codecov_flag: windows
+            coverage_file: coverage/windows-cobertura.xml
     defaults:
       run:
         shell: bash
@@ -94,17 +97,17 @@ jobs:
       - name: Run tests with coverage
         run: |
           moon coverage clean
-          moon test --enable-coverage
+          moon test --target native --enable-coverage
 
       - name: Verify 100% coverage
         run: |
           mkdir -p coverage
-          moon coverage report -f summary | tee "coverage/${{ matrix.flag }}-summary.txt"
+          moon coverage analyze -p justjavac/dirs -- -f summary | tee "coverage/${{ matrix.codecov_flag }}-summary.txt"
           python - <<'PY'
           import pathlib
           import re
 
-          summary = pathlib.Path("coverage/${{ matrix.flag }}-summary.txt").read_text(encoding="utf-8")
+          summary = pathlib.Path("coverage/${{ matrix.codecov_flag }}-summary.txt").read_text(encoding="utf-8")
           match = re.search(r"Total:\s+(\d+)/(\d+)", summary)
           if not match:
               raise SystemExit("coverage summary did not contain a Total line")
@@ -113,25 +116,18 @@ jobs:
               raise SystemExit(f"coverage is not 100%: {covered}/{total}")
           PY
 
-      - name: Build Codecov report
-        run: moon coverage report -f coveralls -o "coverage/${{ matrix.flag }}.json"
+      - name: Coverage XML
+        run: moon coverage analyze -p justjavac/dirs -- -f cobertura -o "${{ matrix.coverage_file }}"
 
       - name: Normalize Codecov paths
         run: |
           python - <<'PY'
-          import json
           import re
           from pathlib import Path
 
-          path = Path("coverage/${{ matrix.flag }}.json")
+          path = Path("${{ matrix.coverage_file }}")
           text = path.read_text(encoding="utf-8")
-
-          def normalize_name(match):
-              prefix, name, suffix = match.groups()
-              return f"{prefix}{name.replace(chr(92), '/')}{suffix}"
-
-          normalized = re.sub(r'("name"\s*:\s*")([^"]*)(")', normalize_name, text)
-          json.loads(normalized)
+          normalized = re.sub(r'(filename|name)="([^"]*)"', lambda m: f'{m.group(1)}="{m.group(2).replace(chr(92), "/")}"', text)
           path.write_text(normalized, encoding="utf-8")
           PY
 
@@ -140,8 +136,8 @@ jobs:
         with:
           disable_search: true
           fail_ci_if_error: true
-          files: coverage/${{ matrix.flag }}.json
-          flags: ${{ matrix.flag }}
-          name: ${{ matrix.flag }}
+          files: ${{ matrix.coverage_file }}
+          flags: ${{ matrix.codecov_flag }}
+          name: coverage-${{ matrix.codecov_flag }}
           use_oidc: true
           verbose: true
