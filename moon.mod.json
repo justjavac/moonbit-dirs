@@ -15,6 +15,6 @@
     "macos",
     "linux"
   ],
-  "description": "MoonBit helpers for resolving user-specific directories across Linux, macOS, and Windows.",
+  "description": "Returns user-specific, platform-specific directory paths across Linux, macOS, and Windows.",
   "source": "src"
 }
