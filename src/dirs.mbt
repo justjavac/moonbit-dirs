@@ -24,8 +24,8 @@
 /// | `"tmp"` | The preferred temporary directory |
 /// | `"video"` | The user's videos directory |
 ///
-/// When the required variables are missing or the platform cannot be inferred,
-/// the function returns `None`.
+/// When the required variables are missing, or when the current compilation
+/// target does not define the requested directory, the function returns `None`.
 ///
 /// # Example
 ///
@@ -37,8 +37,7 @@
 /// }
 /// ```
 pub fn dir(kind : String) -> String? {
-  let envs = current_env()
-  dir_for_env(kind, detect_platform(envs), envs)
+  dir_for_env(kind, current_env())
 }
 
 ///|
@@ -55,8 +54,7 @@ pub fn dir(kind : String) -> String? {
 /// If none of the relevant environment variables are available, this function
 /// returns `None`.
 pub fn home_dir() -> String? {
-  let envs = current_env()
-  home_dir_for_env(detect_platform(envs), envs)
+  home_dir_for_env(current_env())
 }
 
 ///|
@@ -72,8 +70,7 @@ pub fn home_dir() -> String? {
 ///
 /// The function returns `None` when no applicable location can be constructed.
 pub fn cache_dir() -> String? {
-  let envs = current_env()
-  cache_dir_for_env(detect_platform(envs), envs)
+  cache_dir_for_env(current_env())
 }
 
 ///|
@@ -90,8 +87,7 @@ pub fn cache_dir() -> String? {
 /// The function returns `None` when the required environment variables are not
 /// available.
 pub fn config_dir() -> String? {
-  let envs = current_env()
-  config_dir_for_env(detect_platform(envs), envs)
+  config_dir_for_env(current_env())
 }
 
 ///|
@@ -108,8 +104,7 @@ pub fn config_dir() -> String? {
 /// The function returns `None` on platforms where no standard user executable
 /// directory is defined.
 pub fn executable_dir() -> String? {
-  let envs = current_env()
-  executable_dir_for_env(detect_platform(envs), envs)
+  executable_dir_for_env(current_env())
 }
 
 ///|
@@ -126,8 +121,7 @@ pub fn executable_dir() -> String? {
 /// Use this location for data that should roam with the user profile when the
 /// platform supports it.
 pub fn data_dir() -> String? {
-  let envs = current_env()
-  data_dir_for_env(detect_platform(envs), envs)
+  data_dir_for_env(current_env())
 }
 
 ///|
@@ -144,8 +138,7 @@ pub fn data_dir() -> String? {
 /// This is the recommended location for data that should stay on the current
 /// machine instead of roaming with the profile.
 pub fn data_local_dir() -> String? {
-  let envs = current_env()
-  data_local_dir_for_env(detect_platform(envs), envs)
+  data_local_dir_for_env(current_env())
 }
 
 ///|
@@ -159,8 +152,7 @@ pub fn data_local_dir() -> String? {
 /// | macOS | `HOME/Music` |
 /// | Windows | `USERPROFILE/Music`, then `HOMEDRIVE` + `HOMEPATH` + `Music` |
 pub fn audio_dir() -> String? {
-  let envs = current_env()
-  audio_dir_for_env(detect_platform(envs), envs)
+  audio_dir_for_env(current_env())
 }
 
 ///|
@@ -174,8 +166,7 @@ pub fn audio_dir() -> String? {
 /// | macOS | `HOME/Desktop` |
 /// | Windows | `USERPROFILE/Desktop`, then `HOMEDRIVE` + `HOMEPATH` + `Desktop` |
 pub fn desktop_dir() -> String? {
-  let envs = current_env()
-  desktop_dir_for_env(detect_platform(envs), envs)
+  desktop_dir_for_env(current_env())
 }
 
 ///|
@@ -189,8 +180,7 @@ pub fn desktop_dir() -> String? {
 /// | macOS | `HOME/Documents` |
 /// | Windows | `USERPROFILE/Documents`, then `HOMEDRIVE` + `HOMEPATH` + `Documents` |
 pub fn document_dir() -> String? {
-  let envs = current_env()
-  document_dir_for_env(detect_platform(envs), envs)
+  document_dir_for_env(current_env())
 }
 
 ///|
@@ -206,8 +196,7 @@ pub fn document_dir() -> String? {
 ///
 /// The function returns `None` when no home directory can be derived.
 pub fn download_dir() -> String? {
-  let envs = current_env()
-  download_dir_for_env(detect_platform(envs), envs)
+  download_dir_for_env(current_env())
 }
 
 ///|
@@ -221,8 +210,7 @@ pub fn download_dir() -> String? {
 /// | macOS | `HOME/Library/Fonts` |
 /// | Windows | Not defined |
 pub fn font_dir() -> String? {
-  let envs = current_env()
-  font_dir_for_env(detect_platform(envs), envs)
+  font_dir_for_env(current_env())
 }
 
 ///|
@@ -236,8 +224,7 @@ pub fn font_dir() -> String? {
 /// | macOS | `HOME/Pictures` |
 /// | Windows | `USERPROFILE/Pictures`, then `HOMEDRIVE` + `HOMEPATH` + `Pictures` |
 pub fn picture_dir() -> String? {
-  let envs = current_env()
-  picture_dir_for_env(detect_platform(envs), envs)
+  picture_dir_for_env(current_env())
 }
 
 ///|
@@ -251,8 +238,7 @@ pub fn picture_dir() -> String? {
 /// | macOS | `HOME/Public` |
 /// | Windows | `PUBLIC`, then `SYSTEMDRIVE\\Users\\Public` |
 pub fn public_dir() -> String? {
-  let envs = current_env()
-  public_dir_for_env(detect_platform(envs), envs)
+  public_dir_for_env(current_env())
 }
 
 ///|
@@ -266,8 +252,7 @@ pub fn public_dir() -> String? {
 /// | macOS | Not defined |
 /// | Windows | `APPDATA/Microsoft/Windows/Templates` |
 pub fn template_dir() -> String? {
-  let envs = current_env()
-  template_dir_for_env(detect_platform(envs), envs)
+  template_dir_for_env(current_env())
 }
 
 ///|
@@ -281,12 +266,11 @@ pub fn template_dir() -> String? {
 /// | macOS | `TMPDIR` |
 /// | Windows | `TMP`, then `TEMP` |
 ///
-/// This function returns `None` only when the platform cannot be inferred or
-/// the active platform exposes no usable temporary-directory environment
-/// variable.
+/// This function returns `None` only when the current compilation target does
+/// not define a temporary-directory location, or when the active platform
+/// exposes no usable temporary-directory environment variable.
 pub fn tmp_dir() -> String? {
-  let envs = current_env()
-  tmp_dir_for_env(detect_platform(envs), envs)
+  tmp_dir_for_env(current_env())
 }
 
 ///|
@@ -300,6 +284,5 @@ pub fn tmp_dir() -> String? {
 /// | macOS | `HOME/Movies` |
 /// | Windows | `USERPROFILE/Videos`, then `HOMEDRIVE` + `HOMEPATH` + `Videos` |
 pub fn video_dir() -> String? {
-  let envs = current_env()
-  video_dir_for_env(detect_platform(envs), envs)
+  video_dir_for_env(current_env())
 }
