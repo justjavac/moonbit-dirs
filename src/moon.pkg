@@ -1,6 +1,14 @@
 import {
   "moonbitlang/core/builtin",
   "moonbitlang/core/env",
-  "moonbitlang/x/path/posix" @posix,
-  "moonbitlang/x/path/win32" @win32,
+  "moonbitlang/x/path/posix",
+  "moonbitlang/x/path/win32",
 }
+
+import {
+  "moonbitlang/core/debug",
+} for "test"
+
+import {
+  "moonbitlang/core/debug",
+} for "wbtest"

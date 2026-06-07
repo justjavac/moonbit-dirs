@@ -8,7 +8,7 @@ test "environment helpers ignore blank values and search in order" {
   }
 
   fn has_any_env(envs : Map[String, String], keys : Array[String]) -> Bool {
-    first_env(envs, keys) is Some(_)
+    _first_env(envs, keys) is Some(_)
   }
 
   fn env_matches(
@@ -44,12 +44,15 @@ test "environment helpers ignore blank values and search in order" {
     }
   }
 
-  assert_eq(env_value(envs, "EMPTY"), None)
-  assert_eq(env_value(envs, "SECOND"), Some("value"))
+  @debug.assert_eq(env_value(envs, "EMPTY"), None)
+  @debug.assert_eq(env_value(envs, "SECOND"), Some("value"))
   assert_true(env_contains(envs, "OSTYPE", "darwin"))
   assert_true(env_starts_with(envs, "HOME", "/Users/"))
   assert_true(env_matches({ "OS": "WINDOWS_NT" }, "OS", "windows_nt"))
-  assert_eq(first_env(envs, ["EMPTY", "SECOND", "THIRD"]), Some("value"))
+  @debug.assert_eq(
+    _first_env(envs, ["EMPTY", "SECOND", "THIRD"]),
+    Some("value"),
+  )
   assert_true(has_any_env(envs, ["EMPTY", "SECOND"]))
   assert_true(is_blank(" \n\t "))
 }
@@ -57,26 +60,26 @@ test "environment helpers ignore blank values and search in order" {
 ///|
 #cfg(all(target="native", platform="windows"))
 test "join_path delegates to the windows path implementation" {
-  assert_eq(
-    normalize_path("C:\\Users\\alice\\AppData\\Roaming\\..\\Local"),
+  @debug.assert_eq(
+    _normalize_path("C:\\Users\\alice\\AppData\\Roaming\\..\\Local"),
     "C:\\Users\\alice\\AppData\\Local",
   )
-  assert_eq(
+  @debug.assert_eq(
     join_path("C:\\Users\\alice\\", "Downloads"),
     "C:\\Users\\alice\\Downloads",
   )
-  assert_eq(join_path("C:\\", "Temp"), "C:\\Temp")
-  assert_eq(join_path("C:\\Users\\alice", "D:\\Data"), "D:\\Data")
+  @debug.assert_eq(join_path("C:\\", "Temp"), "C:\\Temp")
+  @debug.assert_eq(join_path("C:\\Users\\alice", "D:\\Data"), "D:\\Data")
 }
 
 ///|
 #cfg(not(all(target="native", platform="windows")))
 test "join_path delegates to the posix path implementation" {
-  assert_eq(join_path("", "tmp"), "tmp")
-  assert_eq(join_path("/home/alice/", ".cache"), "/home/alice/.cache")
-  assert_eq(join_path("/", "tmp"), "/tmp")
-  assert_eq(
-    normalize_path("/home/alice/.local/share/../bin"),
+  @debug.assert_eq(join_path("", "tmp"), "tmp")
+  @debug.assert_eq(join_path("/home/alice/", ".cache"), "/home/alice/.cache")
+  @debug.assert_eq(join_path("/", "tmp"), "/tmp")
+  @debug.assert_eq(
+    _normalize_path("/home/alice/.local/share/../bin"),
     "/home/alice/.local/bin",
   )
 }
@@ -100,47 +103,71 @@ test "linux directory resolution covers xdg and fallback branches" {
     "TMPDIR": "/tmp/custom",
     "XDG_VIDEOS_DIR": "/videos",
   }
-  assert_eq(home_dir_for_env(envs), Some("/home/alice"))
-  assert_eq(cache_dir_for_env(envs), Some("/cache"))
-  assert_eq(config_dir_for_env(envs), Some("/config"))
-  assert_eq(executable_dir_for_env(envs), Some("/bin-home"))
-  assert_eq(data_dir_for_env(envs), Some("/data"))
-  assert_eq(data_local_dir_for_env(envs), Some("/data"))
-  assert_eq(audio_dir_for_env(envs), Some("/music"))
-  assert_eq(desktop_dir_for_env(envs), Some("/desktop"))
-  assert_eq(document_dir_for_env(envs), Some("/documents"))
-  assert_eq(download_dir_for_env(envs), Some("/downloads"))
-  assert_eq(font_dir_for_env(envs), Some("/data/fonts"))
-  assert_eq(picture_dir_for_env(envs), Some("/pictures"))
-  assert_eq(public_dir_for_env(envs), Some("/public"))
-  assert_eq(template_dir_for_env(envs), Some("/templates"))
-  assert_eq(tmp_dir_for_env(envs), Some("/tmp/custom"))
-  assert_eq(video_dir_for_env(envs), Some("/videos"))
-  assert_eq(dir_for_env("unsupported", envs), None)
+  @debug.assert_eq(home_dir_for_env(envs), Some("/home/alice"))
+  @debug.assert_eq(cache_dir_for_env(envs), Some("/cache"))
+  @debug.assert_eq(config_dir_for_env(envs), Some("/config"))
+  @debug.assert_eq(executable_dir_for_env(envs), Some("/bin-home"))
+  @debug.assert_eq(data_dir_for_env(envs), Some("/data"))
+  @debug.assert_eq(data_local_dir_for_env(envs), Some("/data"))
+  @debug.assert_eq(audio_dir_for_env(envs), Some("/music"))
+  @debug.assert_eq(desktop_dir_for_env(envs), Some("/desktop"))
+  @debug.assert_eq(document_dir_for_env(envs), Some("/documents"))
+  @debug.assert_eq(download_dir_for_env(envs), Some("/downloads"))
+  @debug.assert_eq(font_dir_for_env(envs), Some("/data/fonts"))
+  @debug.assert_eq(picture_dir_for_env(envs), Some("/pictures"))
+  @debug.assert_eq(public_dir_for_env(envs), Some("/public"))
+  @debug.assert_eq(template_dir_for_env(envs), Some("/templates"))
+  @debug.assert_eq(tmp_dir_for_env(envs), Some("/tmp/custom"))
+  @debug.assert_eq(video_dir_for_env(envs), Some("/videos"))
+  @debug.assert_eq(dir_for_env("unsupported", envs), None)
 
   let fallback_envs : Map[String, String] = { "HOME": "/home/alice" }
-  assert_eq(cache_dir_for_env(fallback_envs), Some("/home/alice/.cache"))
-  assert_eq(config_dir_for_env(fallback_envs), Some("/home/alice/.config"))
-  assert_eq(
+  @debug.assert_eq(cache_dir_for_env(fallback_envs), Some("/home/alice/.cache"))
+  @debug.assert_eq(
+    config_dir_for_env(fallback_envs),
+    Some("/home/alice/.config"),
+  )
+  @debug.assert_eq(
     executable_dir_for_env(fallback_envs),
     Some("/home/alice/.local/bin"),
   )
-  assert_eq(data_dir_for_env(fallback_envs), Some("/home/alice/.local/share"))
-  assert_eq(audio_dir_for_env(fallback_envs), Some("/home/alice/Music"))
-  assert_eq(desktop_dir_for_env(fallback_envs), Some("/home/alice/Desktop"))
-  assert_eq(document_dir_for_env(fallback_envs), Some("/home/alice/Documents"))
-  assert_eq(download_dir_for_env(fallback_envs), Some("/home/alice/Downloads"))
-  assert_eq(picture_dir_for_env(fallback_envs), Some("/home/alice/Pictures"))
-  assert_eq(public_dir_for_env(fallback_envs), Some("/home/alice/Public"))
-  assert_eq(template_dir_for_env(fallback_envs), Some("/home/alice/Templates"))
-  assert_eq(
+  @debug.assert_eq(
+    data_dir_for_env(fallback_envs),
+    Some("/home/alice/.local/share"),
+  )
+  @debug.assert_eq(audio_dir_for_env(fallback_envs), Some("/home/alice/Music"))
+  @debug.assert_eq(
+    desktop_dir_for_env(fallback_envs),
+    Some("/home/alice/Desktop"),
+  )
+  @debug.assert_eq(
+    document_dir_for_env(fallback_envs),
+    Some("/home/alice/Documents"),
+  )
+  @debug.assert_eq(
+    download_dir_for_env(fallback_envs),
+    Some("/home/alice/Downloads"),
+  )
+  @debug.assert_eq(
+    picture_dir_for_env(fallback_envs),
+    Some("/home/alice/Pictures"),
+  )
+  @debug.assert_eq(
+    public_dir_for_env(fallback_envs),
+    Some("/home/alice/Public"),
+  )
+  @debug.assert_eq(
+    template_dir_for_env(fallback_envs),
+    Some("/home/alice/Templates"),
+  )
+  @debug.assert_eq(
     tmp_dir_for_env({ "XDG_RUNTIME_DIR": "/run/user/1000" }),
     Some("/run/user/1000/tmp"),
   )
-  assert_eq(tmp_dir_for_env({ "TEMP": "/tmp/temp" }), Some("/tmp/temp"))
-  assert_eq(tmp_dir_for_env({ "TMP": "/tmp/tmp" }), Some("/tmp/tmp"))
-  assert_eq(tmp_dir_for_env({}), Some("/var/tmp"))
-  assert_eq(font_dir_for_env({}), None)
+  @debug.assert_eq(tmp_dir_for_env({ "TEMP": "/tmp/temp" }), Some("/tmp/temp"))
+  @debug.assert_eq(tmp_dir_for_env({ "TMP": "/tmp/tmp" }), Some("/tmp/tmp"))
+  @debug.assert_eq(tmp_dir_for_env({}), Some("/var/tmp"))
+  @debug.assert_eq(font_dir_for_env({}), None)
 }
 
 ///|
@@ -150,34 +177,37 @@ test "darwin directory resolution covers defined and undefined directories" {
     "HOME": "/Users/alice",
     "TMPDIR": "/var/folders/abc/T/",
   }
-  assert_eq(home_dir_for_env(envs), Some("/Users/alice"))
-  assert_eq(cache_dir_for_env(envs), Some("/Users/alice/Library/Caches"))
-  assert_eq(config_dir_for_env(envs), Some("/Users/alice/Library/Preferences"))
-  assert_eq(executable_dir_for_env(envs), None)
-  assert_eq(
+  @debug.assert_eq(home_dir_for_env(envs), Some("/Users/alice"))
+  @debug.assert_eq(cache_dir_for_env(envs), Some("/Users/alice/Library/Caches"))
+  @debug.assert_eq(
+    config_dir_for_env(envs),
+    Some("/Users/alice/Library/Preferences"),
+  )
+  @debug.assert_eq(executable_dir_for_env(envs), None)
+  @debug.assert_eq(
     data_dir_for_env(envs),
     Some("/Users/alice/Library/Application Support"),
   )
-  assert_eq(
+  @debug.assert_eq(
     data_local_dir_for_env(envs),
     Some("/Users/alice/Library/Application Support"),
   )
-  assert_eq(audio_dir_for_env(envs), Some("/Users/alice/Music"))
-  assert_eq(desktop_dir_for_env(envs), Some("/Users/alice/Desktop"))
-  assert_eq(document_dir_for_env(envs), Some("/Users/alice/Documents"))
-  assert_eq(download_dir_for_env(envs), Some("/Users/alice/Downloads"))
-  assert_eq(font_dir_for_env(envs), Some("/Users/alice/Library/Fonts"))
-  assert_eq(picture_dir_for_env(envs), Some("/Users/alice/Pictures"))
-  assert_eq(public_dir_for_env(envs), Some("/Users/alice/Public"))
-  assert_eq(template_dir_for_env(envs), None)
-  assert_eq(tmp_dir_for_env(envs), Some("/var/folders/abc/T/"))
-  assert_eq(video_dir_for_env(envs), Some("/Users/alice/Movies"))
+  @debug.assert_eq(audio_dir_for_env(envs), Some("/Users/alice/Music"))
+  @debug.assert_eq(desktop_dir_for_env(envs), Some("/Users/alice/Desktop"))
+  @debug.assert_eq(document_dir_for_env(envs), Some("/Users/alice/Documents"))
+  @debug.assert_eq(download_dir_for_env(envs), Some("/Users/alice/Downloads"))
+  @debug.assert_eq(font_dir_for_env(envs), Some("/Users/alice/Library/Fonts"))
+  @debug.assert_eq(picture_dir_for_env(envs), Some("/Users/alice/Pictures"))
+  @debug.assert_eq(public_dir_for_env(envs), Some("/Users/alice/Public"))
+  @debug.assert_eq(template_dir_for_env(envs), None)
+  @debug.assert_eq(tmp_dir_for_env(envs), Some("/var/folders/abc/T/"))
+  @debug.assert_eq(video_dir_for_env(envs), Some("/Users/alice/Movies"))
 
-  assert_eq(cache_dir_for_env({}), None)
-  assert_eq(config_dir_for_env({}), None)
-  assert_eq(data_dir_for_env({}), None)
-  assert_eq(font_dir_for_env({}), None)
-  assert_eq(tmp_dir_for_env({}), None)
+  @debug.assert_eq(cache_dir_for_env({}), None)
+  @debug.assert_eq(config_dir_for_env({}), None)
+  @debug.assert_eq(data_dir_for_env({}), None)
+  @debug.assert_eq(font_dir_for_env({}), None)
+  @debug.assert_eq(tmp_dir_for_env({}), None)
 }
 
 ///|
@@ -190,46 +220,61 @@ test "windows directory resolution covers profile appdata and fallbacks" {
     "PUBLIC": "C:\\Users\\Public",
     "TMP": "C:\\Temp",
   }
-  assert_eq(home_dir_for_env(envs), Some("C:\\Users\\alice"))
-  assert_eq(cache_dir_for_env(envs), Some("C:\\Users\\alice\\AppData\\Local"))
-  assert_eq(
+  @debug.assert_eq(home_dir_for_env(envs), Some("C:\\Users\\alice"))
+  @debug.assert_eq(
+    cache_dir_for_env(envs),
+    Some("C:\\Users\\alice\\AppData\\Local"),
+  )
+  @debug.assert_eq(
     config_dir_for_env(envs),
     Some("C:\\Users\\alice\\AppData\\Roaming"),
   )
-  assert_eq(executable_dir_for_env(envs), None)
-  assert_eq(data_dir_for_env(envs), Some("C:\\Users\\alice\\AppData\\Roaming"))
-  assert_eq(
+  @debug.assert_eq(executable_dir_for_env(envs), None)
+  @debug.assert_eq(
+    data_dir_for_env(envs),
+    Some("C:\\Users\\alice\\AppData\\Roaming"),
+  )
+  @debug.assert_eq(
     data_local_dir_for_env(envs),
     Some("C:\\Users\\alice\\AppData\\Local"),
   )
-  assert_eq(audio_dir_for_env(envs), Some("C:\\Users\\alice\\Music"))
-  assert_eq(desktop_dir_for_env(envs), Some("C:\\Users\\alice\\Desktop"))
-  assert_eq(document_dir_for_env(envs), Some("C:\\Users\\alice\\Documents"))
-  assert_eq(download_dir_for_env(envs), Some("C:\\Users\\alice\\Downloads"))
-  assert_eq(font_dir_for_env(envs), None)
-  assert_eq(picture_dir_for_env(envs), Some("C:\\Users\\alice\\Pictures"))
-  assert_eq(public_dir_for_env(envs), Some("C:\\Users\\Public"))
-  assert_eq(
+  @debug.assert_eq(audio_dir_for_env(envs), Some("C:\\Users\\alice\\Music"))
+  @debug.assert_eq(desktop_dir_for_env(envs), Some("C:\\Users\\alice\\Desktop"))
+  @debug.assert_eq(
+    document_dir_for_env(envs),
+    Some("C:\\Users\\alice\\Documents"),
+  )
+  @debug.assert_eq(
+    download_dir_for_env(envs),
+    Some("C:\\Users\\alice\\Downloads"),
+  )
+  @debug.assert_eq(font_dir_for_env(envs), None)
+  @debug.assert_eq(
+    picture_dir_for_env(envs),
+    Some("C:\\Users\\alice\\Pictures"),
+  )
+  @debug.assert_eq(public_dir_for_env(envs), Some("C:\\Users\\Public"))
+  @debug.assert_eq(
     template_dir_for_env(envs),
     Some("C:\\Users\\alice\\AppData\\Roaming\\Microsoft\\Windows\\Templates"),
   )
-  assert_eq(tmp_dir_for_env(envs), Some("C:\\Temp"))
-  assert_eq(video_dir_for_env(envs), Some("C:\\Users\\alice\\Videos"))
+  @debug.assert_eq(tmp_dir_for_env(envs), Some("C:\\Temp"))
+  @debug.assert_eq(video_dir_for_env(envs), Some("C:\\Users\\alice\\Videos"))
 
-  assert_eq(
+  @debug.assert_eq(
     home_dir_for_env({ "HOMEDRIVE": "D:", "HOMEPATH": "\\Alice" }),
     Some("D:\\Alice"),
   )
-  assert_eq(
+  @debug.assert_eq(
     public_dir_for_env({ "SYSTEMDRIVE": "D:" }),
     Some("D:\\Users\\Public"),
   )
-  assert_eq(template_dir_for_env({}), None)
-  assert_eq(
+  @debug.assert_eq(template_dir_for_env({}), None)
+  @debug.assert_eq(
     tmp_dir_for_env({ "TEMP": "C:\\Windows\\Temp" }),
     Some("C:\\Windows\\Temp"),
   )
-  assert_eq(tmp_dir_for_env({}), None)
+  @debug.assert_eq(tmp_dir_for_env({}), None)
 }
 
 ///|
@@ -239,20 +284,20 @@ test "non native targets resolve no platform specific directories" {
     "HOME": "/home/alice",
     "APPDATA": "C:\\Roaming",
   }
-  assert_eq(home_dir_for_env(envs), None)
-  assert_eq(cache_dir_for_env(envs), None)
-  assert_eq(config_dir_for_env(envs), None)
-  assert_eq(executable_dir_for_env(envs), None)
-  assert_eq(data_dir_for_env(envs), None)
-  assert_eq(data_local_dir_for_env(envs), None)
-  assert_eq(audio_dir_for_env(envs), None)
-  assert_eq(desktop_dir_for_env(envs), None)
-  assert_eq(document_dir_for_env(envs), None)
-  assert_eq(download_dir_for_env(envs), None)
-  assert_eq(font_dir_for_env(envs), None)
-  assert_eq(picture_dir_for_env(envs), None)
-  assert_eq(public_dir_for_env(envs), None)
-  assert_eq(template_dir_for_env(envs), None)
-  assert_eq(tmp_dir_for_env(envs), None)
-  assert_eq(video_dir_for_env(envs), None)
+  @debug.assert_eq(home_dir_for_env(envs), None)
+  @debug.assert_eq(cache_dir_for_env(envs), None)
+  @debug.assert_eq(config_dir_for_env(envs), None)
+  @debug.assert_eq(executable_dir_for_env(envs), None)
+  @debug.assert_eq(data_dir_for_env(envs), None)
+  @debug.assert_eq(data_local_dir_for_env(envs), None)
+  @debug.assert_eq(audio_dir_for_env(envs), None)
+  @debug.assert_eq(desktop_dir_for_env(envs), None)
+  @debug.assert_eq(document_dir_for_env(envs), None)
+  @debug.assert_eq(download_dir_for_env(envs), None)
+  @debug.assert_eq(font_dir_for_env(envs), None)
+  @debug.assert_eq(picture_dir_for_env(envs), None)
+  @debug.assert_eq(public_dir_for_env(envs), None)
+  @debug.assert_eq(template_dir_for_env(envs), None)
+  @debug.assert_eq(tmp_dir_for_env(envs), None)
+  @debug.assert_eq(video_dir_for_env(envs), None)
 }

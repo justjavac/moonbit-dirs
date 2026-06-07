@@ -6,7 +6,7 @@ fn current_env() -> Map[String, String] {
 
 ///|
 /// Returns the first non-blank environment value for the provided keys.
-fn first_env(envs : Map[String, String], keys : Array[String]) -> String? {
+fn _first_env(envs : Map[String, String], keys : Array[String]) -> String? {
   for key in keys {
     match env_value(envs, key) {
       Some(value) => break Some(value)

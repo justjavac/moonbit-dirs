@@ -41,7 +41,7 @@ fn executable_dir_for_env(envs : Map[String, String]) -> String? {
     Some(path) => Some(path)
     None =>
       match env_value(envs, "XDG_DATA_HOME") {
-        Some(data_home) => Some(normalize_path(join_path(data_home, "../bin")))
+        Some(data_home) => Some(_normalize_path(join_path(data_home, "../bin")))
         None =>
           match home_dir_for_env(envs) {
             Some(home) => Some(join_path(join_path(home, ".local"), "bin"))
@@ -76,21 +76,21 @@ fn data_local_dir_for_env(envs : Map[String, String]) -> String? {
 /// Resolves the current target's audio directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn audio_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_MUSIC_DIR", "Music")
+  _user_dir_for_env(envs, "XDG_MUSIC_DIR", "Music")
 }
 
 ///|
 /// Resolves the current target's desktop directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn desktop_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_DESKTOP_DIR", "Desktop")
+  _user_dir_for_env(envs, "XDG_DESKTOP_DIR", "Desktop")
 }
 
 ///|
 /// Resolves the current target's document directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn document_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_DOCUMENTS_DIR", "Documents")
+  _user_dir_for_env(envs, "XDG_DOCUMENTS_DIR", "Documents")
 }
 
 ///|
@@ -121,21 +121,21 @@ fn font_dir_for_env(envs : Map[String, String]) -> String? {
 /// Resolves the current target's picture directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn picture_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_PICTURES_DIR", "Pictures")
+  _user_dir_for_env(envs, "XDG_PICTURES_DIR", "Pictures")
 }
 
 ///|
 /// Resolves the current target's public directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn public_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_PUBLICSHARE_DIR", "Public")
+  _user_dir_for_env(envs, "XDG_PUBLICSHARE_DIR", "Public")
 }
 
 ///|
 /// Resolves the current target's template directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn template_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_TEMPLATES_DIR", "Templates")
+  _user_dir_for_env(envs, "XDG_TEMPLATES_DIR", "Templates")
 }
 
 ///|
@@ -145,7 +145,7 @@ fn tmp_dir_for_env(envs : Map[String, String]) -> String? {
   match env_value(envs, "XDG_RUNTIME_DIR") {
     Some(runtime_dir) => Some(join_path(runtime_dir, "tmp"))
     None =>
-      match first_env(envs, ["TMPDIR", "TEMP", "TMP"]) {
+      match _first_env(envs, ["TMPDIR", "TEMP", "TMP"]) {
         Some(path) => Some(path)
         None => Some("/var/tmp")
       }
@@ -156,5 +156,5 @@ fn tmp_dir_for_env(envs : Map[String, String]) -> String? {
 /// Resolves the current target's video directory on Linux native builds.
 #cfg(all(target="native", platform="linux"))
 fn video_dir_for_env(envs : Map[String, String]) -> String? {
-  user_dir_for_env(envs, "XDG_VIDEOS_DIR", "Videos")
+  _user_dir_for_env(envs, "XDG_VIDEOS_DIR", "Videos")
 }

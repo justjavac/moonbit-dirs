@@ -4,7 +4,7 @@
 fn home_dir_for_env(envs : Map[String, String]) -> String? {
   match env_value(envs, "USERPROFILE") {
     Some(profile) => Some(profile)
-    None => home_drive_path(envs)
+    None => _home_drive_path(envs)
   }
 }
 
@@ -115,7 +115,7 @@ fn template_dir_for_env(envs : Map[String, String]) -> String? {
 /// Resolves the current target's temporary directory on Windows native builds.
 #cfg(all(target="native", platform="windows"))
 fn tmp_dir_for_env(envs : Map[String, String]) -> String? {
-  first_env(envs, ["TMP", "TEMP"])
+  _first_env(envs, ["TMP", "TEMP"])
 }
 
 ///|

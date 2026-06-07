@@ -37,22 +37,28 @@ fn join_path(base : String, child : String) -> String {
 }
 
 ///|
+fn _path_imports() -> Unit {
+  let _ = @posix.sep
+  let _ = @win32.sep
+}
+
+///|
 /// Normalizes a path using the official platform-specific path implementation.
 #cfg(all(target="native", platform="windows"))
-fn normalize_path(path : String) -> String {
+fn _normalize_path(path : String) -> String {
   @win32.Path::normalize(path).to_string()
 }
 
 ///|
 /// Normalizes a path using the official platform-specific path implementation.
 #cfg(not(all(target="native", platform="windows")))
-fn normalize_path(path : String) -> String {
+fn _normalize_path(path : String) -> String {
   @posix.Path::normalize(path).to_string()
 }
 
 ///|
 /// Joins HOMEDRIVE and HOMEPATH when USERPROFILE is unavailable.
-fn home_drive_path(envs : Map[String, String]) -> String? {
+fn _home_drive_path(envs : Map[String, String]) -> String? {
   match (env_value(envs, "HOMEDRIVE"), env_value(envs, "HOMEPATH")) {
     (Some(drive), Some(path)) => Some("\{drive}\{path}")
     _ => None
@@ -70,7 +76,7 @@ fn home_named_dir_for_env(envs : Map[String, String], name : String) -> String? 
 
 ///|
 /// Resolves an XDG-style user directory with a conventional home fallback.
-fn user_dir_for_env(
+fn _user_dir_for_env(
   envs : Map[String, String],
   env_key : String,
   fallback_name : String,

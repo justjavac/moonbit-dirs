@@ -31,9 +31,9 @@
 ///
 /// ```mbt check
 /// test "dir agrees with dedicated helpers" {
-///   assert_eq(@dirs.dir("cache"), @dirs.cache_dir())
-///   assert_eq(@dirs.dir("tmp"), @dirs.tmp_dir())
-///   assert_eq(@dirs.dir("unsupported"), None)
+///   assert_true(@dirs.dir("cache") == @dirs.cache_dir())
+///   assert_true(@dirs.dir("tmp") == @dirs.tmp_dir())
+///   assert_true(@dirs.dir("unsupported") == None)
 /// }
 /// ```
 pub fn dir(kind : String) -> String? {
