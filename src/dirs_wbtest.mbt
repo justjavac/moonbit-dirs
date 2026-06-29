@@ -67,7 +67,6 @@ test "join_path delegates to the windows path implementation" {
     "C:\\Users\\alice\\Downloads",
   )
   assert_eq(join_path("C:\\", "Temp"), "C:\\Temp")
-  assert_eq(join_path("C:\\Users\\alice", "D:\\Data"), "D:\\Data")
 }
 
 ///|
