@@ -1,4 +1,12 @@
 ///|
+// Keep both path packages referenced when cfg selects only one implementation.
+#warnings("-unused_value")
+fn keep_path_packages_referenced() -> Unit {
+  ignore(@posix.Path::join("", ""))
+  ignore(@win32.Path::join("", ""))
+}
+
+///|
 /// Resolves a named directory using the supplied environment snapshot.
 fn dir_for_env(kind : String, envs : Map[String, String]) -> String? {
   match kind {
@@ -31,7 +39,7 @@ fn join_path(base : String, child : String) -> String {
 
 ///|
 /// Joins two path segments with the official platform-specific path implementation.
-#cfg(not(all(target="native", platform="windows")))
+#cfg(all(target="native", not(platform="windows")))
 fn join_path(base : String, child : String) -> String {
   @posix.Path::join(base, child).to_string()
 }
@@ -39,19 +47,22 @@ fn join_path(base : String, child : String) -> String {
 ///|
 /// Normalizes a path using the official platform-specific path implementation.
 #cfg(all(target="native", platform="windows"))
+#warnings("-unused_value")
 fn normalize_path(path : String) -> String {
   @win32.Path::normalize(path).to_string()
 }
 
 ///|
 /// Normalizes a path using the official platform-specific path implementation.
-#cfg(not(all(target="native", platform="windows")))
+#cfg(all(target="native", not(platform="windows")))
+#warnings("-unused_value")
 fn normalize_path(path : String) -> String {
   @posix.Path::normalize(path).to_string()
 }
 
 ///|
 /// Joins HOMEDRIVE and HOMEPATH when USERPROFILE is unavailable.
+#cfg(all(target="native", platform="windows"))
 fn home_drive_path(envs : Map[String, String]) -> String? {
   match (env_value(envs, "HOMEDRIVE"), env_value(envs, "HOMEPATH")) {
     (Some(drive), Some(path)) => Some("\{drive}\{path}")
@@ -61,6 +72,7 @@ fn home_drive_path(envs : Map[String, String]) -> String? {
 
 ///|
 /// Resolves a home-relative directory by name.
+#cfg(target="native")
 fn home_named_dir_for_env(envs : Map[String, String], name : String) -> String? {
   match home_dir_for_env(envs) {
     Some(home) => Some(join_path(home, name))
@@ -70,6 +82,7 @@ fn home_named_dir_for_env(envs : Map[String, String], name : String) -> String? 
 
 ///|
 /// Resolves an XDG-style user directory with a conventional home fallback.
+#cfg(all(target="native", platform="linux"))
 fn user_dir_for_env(
   envs : Map[String, String],
   env_key : String,
