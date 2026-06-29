@@ -28,6 +28,9 @@ coverage:
         informational: true
         flags:
           - windows
+    patch:
+      default:
+        informational: true
 
 flags:
   linux:
