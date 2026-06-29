@@ -53,6 +53,7 @@ test "environment helpers ignore blank values and search in order" {
   assert_true(first_env(envs, ["EMPTY", "SECOND", "THIRD"]) == Some("value"))
   assert_true(has_any_env(envs, ["EMPTY", "SECOND"]))
   assert_true(is_blank(" \n\t "))
+  keep_path_packages_referenced()
 }
 
 ///|

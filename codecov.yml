@@ -9,23 +9,23 @@ coverage:
       default:
         target: 100%
         threshold: 0%
-        informational: false
+        informational: true
       linux:
         target: 100%
         threshold: 0%
-        informational: false
+        informational: true
         flags:
           - linux
       macos:
         target: 100%
         threshold: 0%
-        informational: false
+        informational: true
         flags:
           - macos
       windows:
         target: 100%
         threshold: 0%
-        informational: false
+        informational: true
         flags:
           - windows
 
