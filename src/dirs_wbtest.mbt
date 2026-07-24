@@ -140,8 +140,8 @@ test "linux directory resolution covers xdg and fallback branches" {
   )
   assert_eq(tmp_dir_for_env({ "TEMP": "/tmp/temp" }), Some("/tmp/temp"))
   assert_eq(tmp_dir_for_env({ "TMP": "/tmp/tmp" }), Some("/tmp/tmp"))
-  assert_eq(tmp_dir_for_env({}), Some("/var/tmp"))
-  assert_eq(font_dir_for_env({}), None)
+  assert_eq(tmp_dir_for_env(Map([])), Some("/var/tmp"))
+  assert_eq(font_dir_for_env(Map([])), None)
 }
 
 ///|
@@ -174,11 +174,11 @@ test "darwin directory resolution covers defined and undefined directories" {
   assert_eq(tmp_dir_for_env(envs), Some("/var/folders/abc/T/"))
   assert_eq(video_dir_for_env(envs), Some("/Users/alice/Movies"))
 
-  assert_eq(cache_dir_for_env({}), None)
-  assert_eq(config_dir_for_env({}), None)
-  assert_eq(data_dir_for_env({}), None)
-  assert_eq(font_dir_for_env({}), None)
-  assert_true(tmp_dir_for_env({}) is None)
+  assert_eq(cache_dir_for_env(Map([])), None)
+  assert_eq(config_dir_for_env(Map([])), None)
+  assert_eq(data_dir_for_env(Map([])), None)
+  assert_eq(font_dir_for_env(Map([])), None)
+  assert_true(tmp_dir_for_env(Map([])) is None)
 }
 
 ///|
@@ -226,12 +226,12 @@ test "windows directory resolution covers profile appdata and fallbacks" {
   assert_true(
     public_dir_for_env({ "SYSTEMDRIVE": "D:" }) == Some("D:\\Users\\Public"),
   )
-  assert_true(template_dir_for_env({}) is None)
+  assert_true(template_dir_for_env(Map([])) is None)
   assert_true(
     tmp_dir_for_env({ "TEMP": "C:\\Windows\\Temp" }) ==
     Some("C:\\Windows\\Temp"),
   )
-  assert_true(tmp_dir_for_env({}) is None)
+  assert_true(tmp_dir_for_env(Map([])) is None)
 }
 
 ///|

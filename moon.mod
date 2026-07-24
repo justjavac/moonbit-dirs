@@ -3,7 +3,7 @@ name = "justjavac/dirs"
 version = "0.1.2"
 
 import {
-  "moonbitlang/x@0.4.46",
+  "moonbitlang/x@0.4.47",
 }
 
 readme = "README.mbt.md"
@@ -16,6 +16,4 @@ keywords = [ "moonbit", "directories", "xdg", "windows", "macos", "linux" ]
 
 description = "Returns user-specific, platform-specific directory paths across Linux, macOS, and Windows."
 
-options(
-  source: "src",
-)
+source = "src"
