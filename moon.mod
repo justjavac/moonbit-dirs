@@ -3,7 +3,7 @@ name = "justjavac/dirs"
 version = "0.1.2"
 
 import {
-  "moonbitlang/x@0.4.47",
+  "moonbitlang/x@0.5.5",
 }
 
 readme = "README.mbt.md"
