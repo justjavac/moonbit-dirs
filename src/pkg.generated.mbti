@@ -43,4 +43,3 @@ pub fn video_dir() -> String?
 // Type aliases
 
 // Traits
-

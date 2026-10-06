@@ -34,14 +34,14 @@ fn dir_for_env(kind : String, envs : Map[String, String]) -> String? {
 /// Joins two path segments with the official platform-specific path implementation.
 #cfg(all(target="native", platform="windows"))
 fn join_path(base : String, child : String) -> String {
-  @win32.Path::join(base, child).to_string()
+  Show::to_string(@win32.Path::join(base, child))
 }
 
 ///|
 /// Joins two path segments with the official platform-specific path implementation.
 #cfg(all(target="native", not(platform="windows")))
 fn join_path(base : String, child : String) -> String {
-  @posix.Path::join(base, child).to_string()
+  Show::to_string(@posix.Path::join(base, child))
 }
 
 ///|
@@ -49,7 +49,7 @@ fn join_path(base : String, child : String) -> String {
 #cfg(all(target="native", platform="windows"))
 #warnings("-unused_value")
 fn normalize_path(path : String) -> String {
-  @win32.Path::normalize(path).to_string()
+  Show::to_string(@win32.Path::normalize(path))
 }
 
 ///|
@@ -57,7 +57,7 @@ fn normalize_path(path : String) -> String {
 #cfg(all(target="native", not(platform="windows")))
 #warnings("-unused_value")
 fn normalize_path(path : String) -> String {
-  @posix.Path::normalize(path).to_string()
+  Show::to_string(@posix.Path::normalize(path))
 }
 
 ///|
